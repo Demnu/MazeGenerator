@@ -10,7 +10,6 @@ public class Node {
     private Node right;
     private Node bottom;
     private Node left;
-    private Node parent;
     private boolean visited;
     private int cellOpenness = 0;
 
@@ -155,14 +154,6 @@ public class Node {
 
     public void setTop(Node top) {
         this.top = top;
-    }
-
-    public void setParent(Node parent) {
-        this.parent = parent;
-    }
-
-    public Node getParent() {
-        return parent;
     }
 
     public void setCellOpenness(int cellOpenness) {

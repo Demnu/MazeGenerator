@@ -1,7 +1,10 @@
 import java.util.Random;
 import java.util.Stack;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
-public class A1UsingNodes {
+public class A1 {
     private static final int BOTH_CLOSED = 0;
     private static final int RIGHT_ONLY_OPEN = 1;
     private static final int BOTTOM_ONLY_OPEN = 2;
@@ -13,18 +16,20 @@ public class A1UsingNodes {
     private static int columns;
     private static int numberOfNodes;
     private static int numberOfNodesVisted = 0;
+    private static String cell_openness_list = "";
     public static Stack<Node> stack;
     static Random rn = new Random();
 
     public static void main(String[] args) {
         stack = new Stack<Node>();
-        rows = 1;
+        rows = 5;
         columns = 5;
         numberOfNodes = rows * columns;
         generateNodes();
         connectNodes();
         generateMaze();
         displayMaze();
+        saveMazeToFile();
     }
 
     public static void generateMaze() {
@@ -102,13 +107,13 @@ public class A1UsingNodes {
             horizontalBorder += "---";
         }
         System.out.println(horizontalBorder);
-        String body = "";
         // display body
         for (int i = 0; i < rows; i++) {
             String line1 = "";
             String line2 = "";
             for (int j = 0; j < columns; j++) {
                 Node cell = grid[i][j];
+                cell_openness_list += cell.getCellOpenness();
                 // add left horizontal wall
                 if (cell.getLeft() == null) {
                     line1 += "|";
@@ -147,24 +152,43 @@ public class A1UsingNodes {
 
     }
 
-    public static void outputGrid() {
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                System.out.print(grid[i][j].getValue() + " - ");
-                if (grid[i][j].getCellOpenness() == BOTH_CLOSED) {
-                    System.out.print("BOTH CLOSED");
-                }
-                if (grid[i][j].getCellOpenness() == BOTH_OPEN) {
-                    System.out.print("BOTH OPEN");
-                }
-                if (grid[i][j].getCellOpenness() == RIGHT_ONLY_OPEN) {
-                    System.out.print("RIGHT ONLY OPEN");
-                }
-                if (grid[i][j].getCellOpenness() == BOTTOM_ONLY_OPEN) {
-                    System.out.print("BOTTOM ONLY OPEN");
-                }
-                System.out.println();
-            }
+    public static void saveMazeToFile() {
+        String line;
+        line = rows + "," + columns + ":" + startNode.getValue() + ":" + endNode.getValue() + ":" + cell_openness_list;
+        // create new file
+        try {
+            File file = new File("data.txt");
+            file.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // write to new file
+        try {
+            FileWriter myWriter = new FileWriter("data.txt");
+            myWriter.write(line);
+            myWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
+    // public static void outputGrid() {
+    // for (int i = 0; i < rows; i++) {
+    // for (int j = 0; j < columns; j++) {
+    // System.out.print(grid[i][j].getValue() + " - ");
+    // if (grid[i][j].getCellOpenness() == BOTH_CLOSED) {
+    // System.out.print("BOTH CLOSED");
+    // }
+    // if (grid[i][j].getCellOpenness() == BOTH_OPEN) {
+    // System.out.print("BOTH OPEN");
+    // }
+    // if (grid[i][j].getCellOpenness() == RIGHT_ONLY_OPEN) {
+    // System.out.print("RIGHT ONLY OPEN");
+    // }
+    // if (grid[i][j].getCellOpenness() == BOTTOM_ONLY_OPEN) {
+    // System.out.print("BOTTOM ONLY OPEN");
+    // }
+    // System.out.println();
+    // }
+    // }
+    // }
 }
