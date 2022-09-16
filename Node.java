@@ -13,6 +13,12 @@ public class Node {
     private boolean visited;
     private int cellOpenness = 0;
 
+    Node(int value, int cellOpenness) {
+        this.value = value;
+        this.cellOpenness = cellOpenness;
+        visited = false;
+    }
+
     Node(int value) {
         this.value = value;
         this.visited = false;

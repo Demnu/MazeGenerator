@@ -29,7 +29,16 @@ public class A1 {
         connectNodes();
         generateMaze();
         displayMaze();
+        calculateCellOpennessList();
         saveMazeToFile();
+    }
+
+    public static void calculateCellOpennessList() {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                cell_openness_list += grid[i][j].getCellOpenness();
+            }
+        }
     }
 
     public static void generateMaze() {
@@ -113,7 +122,6 @@ public class A1 {
             String line2 = "";
             for (int j = 0; j < columns; j++) {
                 Node cell = grid[i][j];
-                cell_openness_list += cell.getCellOpenness();
                 // add left horizontal wall
                 if (cell.getLeft() == null) {
                     line1 += "|";
