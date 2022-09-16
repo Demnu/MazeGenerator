@@ -1,3 +1,6 @@
+import java.util.ArrayList; // import the ArrayList class
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Random;
 
 public class Node {
@@ -12,6 +15,8 @@ public class Node {
     private Node left;
     private boolean visited;
     private int cellOpenness = 0;
+    private Node parent;
+    private boolean correctStep;
 
     Node(int value, int cellOpenness) {
         this.value = value;
@@ -22,6 +27,35 @@ public class Node {
     Node(int value) {
         this.value = value;
         this.visited = false;
+    }
+
+    public Queue<Node> getAvailableNodes() {
+        Queue<Node> paths = new LinkedList<Node>();
+        // check if top node can be accessed
+        if (top != null && top.getVisited() == false
+                && (top.getCellOpenness() == BOTTOM_ONLY_OPEN || top.getCellOpenness() == BOTH_OPEN)) {
+            paths.add(top);
+        }
+        // check if left node can be accessed
+        if (left != null && left.getVisited() == false
+                && (left.getCellOpenness() == RIGHT_ONLY_OPEN || left.getCellOpenness() == BOTH_OPEN)) {
+            paths.add(left);
+        }
+        // check if next nodes can be accessed right or below
+        if (cellOpenness == BOTH_OPEN) {
+            if (right.getVisited() == false) {
+                paths.add(right);
+            }
+            if (bottom.getVisited() == false) {
+                paths.add(bottom);
+            }
+        } else if (cellOpenness == RIGHT_ONLY_OPEN && right.getVisited() == false) {
+            paths.add(right);
+        } else if (cellOpenness == BOTTOM_ONLY_OPEN && bottom.getVisited() == false) {
+            paths.add(bottom);
+        }
+
+        return paths;
     }
 
     public void calculateCellOpenness(Node currentNode, Node nextNode) {
@@ -169,4 +203,21 @@ public class Node {
     public int getCellOpenness() {
         return cellOpenness;
     }
+
+    public void setParent(Node parent) {
+        this.parent = parent;
+    }
+
+    public Node getParent() {
+        return parent;
+    }
+
+    public void setCorrectStep(boolean correctStep) {
+        this.correctStep = correctStep;
+    }
+
+    public boolean getCorrectStep() {
+        return correctStep;
+    }
+
 }

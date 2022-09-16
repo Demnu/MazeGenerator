@@ -22,8 +22,8 @@ public class A1 {
 
     public static void main(String[] args) {
         stack = new Stack<Node>();
-        rows = 5;
-        columns = 5;
+        rows = 10;
+        columns = 10;
         numberOfNodes = rows * columns;
         generateNodes();
         connectNodes();
@@ -132,7 +132,7 @@ public class A1 {
                 } else if (cell == endNode) {
                     line1 += "F";
                 } else {
-                    line1 += " ";
+                    line1 += "*";
                 }
                 line1 += " ";
                 if (cell.getCellOpenness() == BOTH_CLOSED) {
