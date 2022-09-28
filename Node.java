@@ -1,9 +1,16 @@
-import java.util.ArrayList; // import the ArrayList class
+
+/* Name: Harrison Collins
+ * Student Number: c3282352
+ * File: Node.java
+ * Description: 
+ * Acts like a cell in the maze grid
+ */
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
 
 public class Node {
+    // global variables
     private static final int RIGHT_ONLY_OPEN = 1;
     private static final int BOTTOM_ONLY_OPEN = 2;
     private static final int BOTH_OPEN = 3;
@@ -18,6 +25,7 @@ public class Node {
     private Node parent;
     private boolean correctStep;
 
+    // constructors
     Node(int value, int cellOpenness) {
         this.value = value;
         this.cellOpenness = cellOpenness;
@@ -29,6 +37,7 @@ public class Node {
         this.visited = false;
     }
 
+    // returns a queue of neighbouring nodes that can be accessed
     public Queue<Node> getAvailableNodes() {
         Queue<Node> paths = new LinkedList<Node>();
         // check if top node can be accessed
@@ -93,6 +102,7 @@ public class Node {
         }
     }
 
+    // checks if a node has any unvisited neighbors
     public boolean hasUnvisitedNeighbor() {
         if (top != null && top.getVisited() == false) {
             return true;
@@ -112,6 +122,7 @@ public class Node {
         return false;
     }
 
+    // returns a random unvisted neighbor
     public Node getRandomUnvistedNeighbor() {
         int[] array = new int[4];
         int count = 0;
@@ -135,7 +146,6 @@ public class Node {
             return null;
         }
         int rndNumber = rn.nextInt(count);
-
         if (array[rndNumber] == 0) {
             return top;
         } else if (array[rndNumber] == 1) {
@@ -148,6 +158,7 @@ public class Node {
         return null;
     }
 
+    // getters
     public boolean getVisited() {
         return visited;
     }
@@ -172,6 +183,11 @@ public class Node {
         return top;
     }
 
+    public Node getParent() {
+        return parent;
+    }
+
+    // setters
     public void setVisited(boolean visited) {
         this.visited = visited;
     }
@@ -206,10 +222,6 @@ public class Node {
 
     public void setParent(Node parent) {
         this.parent = parent;
-    }
-
-    public Node getParent() {
-        return parent;
     }
 
     public void setCorrectStep(boolean correctStep) {

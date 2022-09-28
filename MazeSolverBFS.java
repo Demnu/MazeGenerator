@@ -1,11 +1,18 @@
+
+/* Name: Harrison Collins
+ * Student Number: c3282352
+ * File: MazeSolverBFS.java
+ * Description: 
+ * Retrieves a given maze file that reads then solves the maze using breadth first search
+ */
 import java.io.File;
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.Queue;
 import java.util.Scanner;
+import java.util.Stack;
 
 public class MazeSolverBFS {
+    // global variables
     private static final int BOTH_CLOSED = 0;
     private static final int RIGHT_ONLY_OPEN = 1;
     private static final int BOTTOM_ONLY_OPEN = 2;
@@ -18,22 +25,28 @@ public class MazeSolverBFS {
     private static Queue<Node> currentLayer;
     private static Queue<Node> nextLayer;
     private static Queue<Node> visitedNodes;
-    private static int steps;
+    private static int totalSteps;
+    private static int solutionSteps;
+    private static long startTime;
+    private static long timeTaken;
 
     public static void main(String[] args) {
         // get maze from file
         String input = "";
         try {
-            Scanner scanner = new Scanner(new File("data.txt"));
+            Scanner scanner = new Scanner(new File(args[0]));
             input = scanner.nextLine();
         } catch (Exception e) {
             System.out.println(e);
             System.exit(1);
         }
+        // two layers to emulate BFS
         currentLayer = new LinkedList<Node>();
         nextLayer = new LinkedList<Node>();
         visitedNodes = new LinkedList<Node>();
-        steps = 0;
+        solutionSteps = 0;
+        totalSteps = 0;
+        startTime = System.currentTimeMillis();
         createGrid(input);
         connectNodes();
         solveMazeUsingBFS();
@@ -42,11 +55,49 @@ public class MazeSolverBFS {
     }
 
     public static void outputBFSSolution() {
-        Node tempNode = endNode.getParent();
+        // display path solution
+        displayPathSolution();
+        // display number of steps in solution
+        System.out.println(solutionSteps);
+        // display number of total steps in solution
+        System.out.println(totalSteps);
+        // display time taken to solve maze
+        System.out.println(timeTaken);
+        // display solution on maze
+        if (rows * columns <= 25) {
+            displaySolutionOnMaze();
+        }
+
+    }
+
+    public static void displayPathSolution() {
+        String path = "(";
+        Stack<Integer> stack = new Stack<>();
+        Node tempNode = endNode;
+        // start at the end node and trace back to the start node
         while (tempNode != startNode) {
             tempNode.setCorrectStep(true);
+            // push visited node to a stack that will then be read to output the results in
+            // the right order
+            stack.push(tempNode.getValue());
             tempNode = tempNode.getParent();
+            solutionSteps++;
         }
+        String value;
+        // output the path taken to the end node
+        while (!stack.isEmpty()) {
+            value = Integer.toString(stack.pop());
+            if (Integer.parseInt(value) != endNode.getValue()) {
+                path += value + ",";
+            } else {
+                path += value + ")";
+            }
+        }
+        System.out.println(path);
+    }
+
+    public static void displaySolutionOnMaze() {
+
         // display top border
         String horizontalBorder = "-";
         for (int i = 0; i < columns; i++) {
@@ -98,30 +149,36 @@ public class MazeSolverBFS {
         }
     }
 
+    // solves the maze using BFS
     public static void solveMazeUsingBFS() {
         boolean foundEnd = false;
         currentLayer.add(startNode);
+        // while loop that will finish once the end node is found
         while (!foundEnd) {
             for (Node nextNode : currentLayer) {
                 foundEnd = checkNode(nextNode);
                 if (foundEnd) {
+                    timeTaken = System.currentTimeMillis() - startTime;
                     break;
                 }
             }
+            // start searching the next layer
             currentLayer = nextLayer;
             nextLayer = new LinkedList<Node>();
         }
-
     }
 
+    // checks the current node to see if it is the end node otherwise add
+    // neighboring available nodes to the next layer
     public static boolean checkNode(Node nextNode) {
         visitedNodes.add(nextNode);
         nextNode.setVisited(true);
-        steps++;
+        totalSteps++;
 
         if (nextNode == endNode) {
             return true;
         } else {
+            // add neighbouring available nodes to the next layer
             for (Node tempNode : nextNode.getAvailableNodes()) {
                 tempNode.setParent(nextNode);
                 nextLayer.add(tempNode);
@@ -155,6 +212,8 @@ public class MazeSolverBFS {
         }
     }
 
+    // method that recieves the data from the given file that then creates a maze
+    // using a multidimensional array of nodes
     public static void createGrid(String input) {
         try {
             String[] arrSplit = input.split("");
